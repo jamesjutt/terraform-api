@@ -7,7 +7,7 @@ resource "aws_lambda_function" "example" {
 
   s3_bucket = "testrestapitest"
   s3_key    = "routes"
-  handler   = "main.handler"
+  handler   = "./lambda.handler"
   runtime   = "nodejs10.x"
 
   role = "${aws_iam_role.lambda_exec.arn}"
@@ -16,8 +16,8 @@ resource "aws_lambda_function" "example" {
 # IAM role which dictates what other AWS services the Lambda function
 # may access.
 resource "aws_iam_role" "lambda_exec" {
-  name = "serverless_example_lambda"
-
+  name               = "serverless_example_lambda"
+  users              = "jamesrjutt"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -72,7 +72,7 @@ resource "aws_api_gateway_integration" "lambda_root" {
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = "${aws_lambda_function.example.invoke_arn}"
+  uri                     = "${aws_lambda_function.example.invoke_arn}" // change this and permissions
 }
 
 resource "aws_api_gateway_deployment" "example" {
